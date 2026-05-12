@@ -5,8 +5,17 @@ export const generateTryon = async (
     res
 ) => {
     const { garm_img, human_img, garment_des } = req.body;
+    console.log(`[TryOn Controller] Processing request for userId: 135189493112132`);
 
     try {
+        if (!garm_img || !human_img) {
+            console.warn("[TryOn Controller] Missing images in request");
+            return res.status(400).json({
+                success: false,
+                message: "Garment image and human image are required",
+            });
+        }
+
         const result = await runTryon(
             human_img,
             garm_img,
@@ -21,11 +30,11 @@ export const generateTryon = async (
             userId: "135189493112132"
         });
     } catch (error) {
-        console.error(error);
+        console.error("[TryOn Controller] Error generating tryon:", error);
 
         res.status(500).json({
             success: false,
-            message: "Generation failed",
+            message: error.message || "Generation failed",
         });
     }
 };
